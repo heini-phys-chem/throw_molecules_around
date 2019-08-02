@@ -1,7 +1,6 @@
 import sys
 import numpy as np
 
-
 def print_test_dist(coords, place, d_C1Xs, d_C2Ys):
 	if place == True:
 		print("X dist_old:\t\t%.5f" % np.linalg.norm(get_vec(coords[0], coords[2])))
@@ -93,7 +92,7 @@ def get_mol(filename):
 	return numAtoms, labels, coords
 
 def center_mol(atom, coords):
-  ''' center mol '''
+  ''' center molecule '''
 
   for i in range(len(coords)):
     coords[i] = [ coords[i][0] - atom[0], coords[i][1] - atom[1], coords[i][2] - atom[2] ]
@@ -101,10 +100,11 @@ def center_mol(atom, coords):
   return coords
 
 def get_vec(atom1, atom2):
-	''' return a vector from 2 points '''
+	''' returns vector from 2 points '''
 	return np.array(atom2) - np.array(atom1)
 
 def get_angle(v1, v2):
+	''' returns angle between 2 vectors '''
 	cos = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
 	arccos = np.arccos(cos)
 	degrees = np.degrees(arccos)
@@ -112,6 +112,7 @@ def get_angle(v1, v2):
 	return degrees
 
 def get_dihedral(v1, v2, v3):
+	''' returns dihedral between 3 vectors '''
 	v12 = np.cross(v1, v2)
 	v23 = np.cross(v2, v3)
 
@@ -122,7 +123,8 @@ def get_dihedral(v1, v2, v3):
 
 	return torsion
 
-def get_dist(v):
+def get_norm(v):
+	''' returns norm of vector '''
 	return np.linalg.norm(v)
 
 def rotation_matrix(axis, theta):
@@ -141,12 +143,14 @@ def rotation_matrix(axis, theta):
 
 
 def print_xyz(numAtoms, labels, coords):
+	''' prints xyz file to std output '''
 	print(str(numAtoms))
 	for i, coord in enumerate(coords):
 		print("%s\t%.4f\t%.4f\t%.4f" % (labels[i], coord[0], coord[1], coord[2]))
 
-def move_atom_along_vector(origin, atom, v, d_new, coords, XY):
-	d_old = get_dist(v)
+def set_vec(origin, atom, v, d_new, coords, XY):
+	''' set distance '''
+	d_old = get_norm(v)
 	vn = v / np.linalg.norm(v)
 	diff = d_new - d_old
 	if XY == 'X': coords[2] = atom + diff * vn
@@ -154,7 +158,8 @@ def move_atom_along_vector(origin, atom, v, d_new, coords, XY):
 
 	return coords 
 
-def rotate_along_angle(angle_new, v1, v2, coords, XY):
+def set_angle(angle_new, v1, v2, coords, XY):
+	''' set angle '''
 	v12 = np.cross(v1, v2)
 	n12 = v12 / np.linalg.norm(v12)
 
@@ -174,7 +179,8 @@ def rotate_along_angle(angle_new, v1, v2, coords, XY):
 
 	return coords
 
-def rotate_along_dihedral(atom, dihedral_new, v1, v2, v3, coords):
+def set_dihedral(atom, dihedral_new, v1, v2, v3, coords):
+	''' set dihedral angle '''
 	dihedral_old = get_dihedral(v1, v2, v3)
 	diff = dihedral_old - dihedral_new
 
@@ -196,7 +202,7 @@ def get_atoms(coords):
 	return C1, C2, X, Y
 
 def write_xyz(numAtoms, labels, corods, fout):
-	f = open(fout, 'a')
+	f = open(fout, 'w')
 	f.write(str(numAtoms) + '\n')
 	for i in range(len(labels)):
 		f.write("{0}\t{1:.5f}\t{2:.5f}\t{3:.5f}\n".format(labels[i], coords[i][0], coords[i][1], coords[i][2]) )
@@ -218,24 +224,23 @@ if __name__ == '__main__':
 
 		''' set new distances '''
 		print_test_dist(coords, True, d_C1Xs[i], d_C2Ys[i])
-		coords = move_atom_along_vector(C1, X, get_vec(C1, X), d_C1Xs[i], coords, 'X')
+		coords = set_vec(C1, X, get_vec(C1, X), d_C1Xs[i], coords, 'X')
 		C1, C2, X, Y = get_atoms(coords)
-		coords = move_atom_along_vector(C2, Y, get_vec(C2, Y), d_C2Ys[i], coords, 'Y')
+		coords = set_vec(C2, Y, get_vec(C2, Y), d_C2Ys[i], coords, 'Y')
 		C1, C2, X, Y = get_atoms(coords)
 		print_test_dist(coords, False, d_C1Xs[i], d_C2Ys[i])
 
 		''' set new angles '''
 		print_test_angle(coords, True, a_C1Xs[i], a_C2Ys[i])
-		coords = rotate_along_angle(a_C1Xs[i], get_vec(C1, X), get_vec(C1, C2), coords, 'X')
+		coords = set_angle(a_C1Xs[i], get_vec(C1, X), get_vec(C1, C2), coords, 'X')
 		C1, C2, X, Y = get_atoms(coords)
-		coords = rotate_along_angle(a_C2Ys[i], get_vec(C2, Y), get_vec(C2, C1), coords, 'Y')
+		coords = set_angle(a_C2Ys[i], get_vec(C2, Y), get_vec(C2, C1), coords, 'Y')
 		C1, C2, X, Y = get_atoms(coords)
 		print_test_angle(coords, False, a_C1Xs[i], a_C2Ys[i])
 
-
 		''' set new dihedral '''
 		print_test_dihedral(coords, True, dihedrals[i])
-		coords = rotate_along_dihedral(Y,
+		coords = set_dihedral(Y,
 				                              dihedrals[i],
 																			get_vec(X, C1),
 																			get_vec(C1, C2),
