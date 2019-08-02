@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 
+
 def print_test_dist(coords, place, d_C1Xs, d_C2Ys):
 	if place == True:
 		print("X dist_old:\t\t%.5f" % np.linalg.norm(get_vec(coords[0], coords[2])))
