@@ -195,8 +195,6 @@ def get_atoms(coords):
 	return C1, C2, X, Y
 
 def write_xyz(numAtoms, labels, corods, fout):
-
-	print(labels)
 	f = open(fout, 'a')
 	f.write(str(numAtoms) + '\n')
 	for i in range(len(labels)):
