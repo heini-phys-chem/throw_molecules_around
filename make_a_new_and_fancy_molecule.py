@@ -1,6 +1,5 @@
 import sys
 import numpy as np
-from pyquaternion import Quaternion
 
 def print_test_dist(coords, place, d_C1Xs, d_C2Ys):
 	if place == True:
@@ -171,10 +170,6 @@ def rotate_along_angle(angle_new, v1, v2, coords, XY):
 		coords = center_mol(coords[1], coords)
 		atom = coords[3]
 		coords[3] = np.dot( rotation_matrix(axis, theta), [atom[0], atom[1], atom[2]] )
-
-
-#	r = Quaternion(axis=axis, angle=-theta)
-#	atom_new = r.rotate(atom)
 
 	return coords
 
