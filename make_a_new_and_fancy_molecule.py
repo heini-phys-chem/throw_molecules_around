@@ -32,7 +32,7 @@ def print_test_angle(coords, place, a_C1Xs, a_C2Ys):
 					                                   get_vec(coords[1], coords[0])))
 		print()
 
-def print_test_dihedral(coords, place, dihedrals):
+def print_test_dihedral(coords, place, dihedrals, filename):
 	if place == True:
 
 		print("dihedral_old:\t\t%.5f" % get_dihedral(
@@ -45,6 +45,13 @@ def print_test_dihedral(coords, place, dihedrals):
 				get_vec(coords[2], coords[0]), 
 				get_vec(coords[0], coords[1]),
 				get_vec(coords[1], coords[3]) ))
+		print()
+#		if (float("%.5f" % (dihedrals)) == float("%.5f" % (get_dihedral(get_vec(coords[2], coords[0]), get_vec(coords[0], coords[1]), get_vec(coords[1], coords[3]))))):
+#			print(filename + " +")
+#		else:
+#			print(filename + " -")
+def scalar(v1, v2):
+	return sum(v1*v2)
 
 def get_data(filename):
 	''' read in new distances, angles and dihedral'''
@@ -121,7 +128,13 @@ def get_dihedral(v1, v2, v3):
 
 	torsion = get_angle(n12, n23)
 
-	return torsion
+	if scalar(n12,v3) >= 0:
+		return torsion
+	else:
+		torsion = 360-torsion
+		if torsion == 360: torsion = 0.0
+
+		return torsion
 
 def get_norm(v):
 	''' returns norm of vector '''
@@ -223,30 +236,30 @@ if __name__ == '__main__':
 		C1, C2, X, Y = get_atoms(coords)
 
 		''' set new distances '''
-		print_test_dist(coords, True, d_C1Xs[i], d_C2Ys[i])
+#		print_test_dist(coords, True, d_C1Xs[i], d_C2Ys[i])
 		coords = set_vec(C1, X, get_vec(C1, X), d_C1Xs[i], coords, 'X')
 		C1, C2, X, Y = get_atoms(coords)
 		coords = set_vec(C2, Y, get_vec(C2, Y), d_C2Ys[i], coords, 'Y')
 		C1, C2, X, Y = get_atoms(coords)
-		print_test_dist(coords, False, d_C1Xs[i], d_C2Ys[i])
+#		print_test_dist(coords, False, d_C1Xs[i], d_C2Ys[i])
 
 		''' set new angles '''
-		print_test_angle(coords, True, a_C1Xs[i], a_C2Ys[i])
+#		print_test_angle(coords, True, a_C1Xs[i], a_C2Ys[i])
 		coords = set_angle(a_C1Xs[i], get_vec(C1, X), get_vec(C1, C2), coords, 'X')
 		C1, C2, X, Y = get_atoms(coords)
 		coords = set_angle(a_C2Ys[i], get_vec(C2, Y), get_vec(C2, C1), coords, 'Y')
 		C1, C2, X, Y = get_atoms(coords)
-		print_test_angle(coords, False, a_C1Xs[i], a_C2Ys[i])
+#		print_test_angle(coords, False, a_C1Xs[i], a_C2Ys[i])
 
 		''' set new dihedral '''
-		print_test_dihedral(coords, True, dihedrals[i])
+#		print_test_dihedral(coords, True, dihedrals[i])
 		coords = set_dihedral(Y,
 				                              dihedrals[i],
 																			get_vec(X, C1),
 																			get_vec(C1, C2),
 																			get_vec(C2, Y),
 																			coords)
-		print_test_dihedral(coords, False, dihedrals[i])
+		print_test_dihedral(coords, False, dihedrals[i], fin)
 
 		''' print  new coordinates '''
 #		print_xyz(numAtoms, labels, coords)
