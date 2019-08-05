@@ -12,7 +12,7 @@ def print_test_dist(coords, place, d_C1Xs, d_C2Ys):
 		print("Y Dist should be:\t%.5f" % d_C2Ys)
 		print("Y Dist_new:\t\t%.5f" % np.linalg.norm(get_vec(coords[1], coords[3])))
 		print()
-
+		
 
 def print_test_angle(coords, place, a_C1Xs, a_C2Ys):
 	if place == True:
@@ -32,6 +32,7 @@ def print_test_angle(coords, place, a_C1Xs, a_C2Ys):
 					                                   get_vec(coords[1], coords[0])))
 		print()
 
+		
 def print_test_dihedral(coords, place, dihedrals, filename):
 	if place == True:
 
