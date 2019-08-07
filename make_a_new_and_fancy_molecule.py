@@ -3,49 +3,48 @@ import numpy as np
 
 def print_test_dist(coords, place, d_C1Xs, d_C2Ys):
 	if place == True:
-		print("X dist_old:\t\t%.5f" % np.linalg.norm(get_vec(coords[0], coords[2])))
-		print("Y Dist_old:\t\t%.5f" % np.linalg.norm(get_vec(coords[1], coords[3])))
+		print("X dist_old:\t\t{:.5f}".format(np.linalg.norm(get_vec(coords[0], coords[2]))))
+		print("Y Dist_old:\t\t{:.5f}".format(np.linalg.norm(get_vec(coords[1], coords[3]))))
 		print()
 	else:
-		print("X dist should be:\t%.5f" % d_C1Xs)
-		print("X dist_new:\t\t%.5f" % np.linalg.norm(get_vec(coords[0], coords[2])))
-		print("Y Dist should be:\t%.5f" % d_C2Ys)
-		print("Y Dist_new:\t\t%.5f" % np.linalg.norm(get_vec(coords[1], coords[3])))
+		print("X dist should be:\t{:.5f}".format(d_C1Xs))
+		print("X dist_new:\t\t{:.5f}".format(np.linalg.norm(get_vec(coords[0], coords[2]))))
+		print("Y Dist should be:\t{:.5f}".format(d_C2Ys))
+		print("Y Dist_new:\t\t{:.5f}".format(np.linalg.norm(get_vec(coords[1], coords[3]))))
 		print()
-		
+
 
 def print_test_angle(coords, place, a_C1Xs, a_C2Ys):
 	if place == True:
 
-		print("X angle_old:\t\t%.5f" % get_angle(get_vec(coords[0], coords[2]),
-				                                     get_vec(coords[0], coords[1])))
-		print("Y angle_old:\t\t%.5f" % get_angle(get_vec(coords[1], coords[3]),
-				                                     get_vec(coords[1], coords[0])))
+		print("X angle_old:\t\t{:.5f}".format(get_angle(get_vec(coords[0], coords[2]),
+				                                     get_vec(coords[0], coords[1]))))
+		print("Y angle_old:\t\t{:.5f}".format(get_angle(get_vec(coords[1], coords[3]),
+				                                     get_vec(coords[1], coords[0]))))
 
 		print()
 	else:
-		print("X how it should be:\t%.5f" % a_C1Xs)
-		print("X angle_new:\t\t%.5f" % get_angle(get_vec(coords[0], coords[1]),
-				                                     get_vec(coords[0], coords[2])))
-		print("Y how it should be:\t%.5f" % a_C2Ys)
-		print("Y angle_new:\t\t%.5f" % get_angle(get_vec(coords[1], coords[3]),
-					                                   get_vec(coords[1], coords[0])))
+		print("X how it should be:\t{:.5f}".format(a_C1Xs))
+		print("X angle_new:\t\t{:.5f}".format(get_angle(get_vec(coords[0], coords[1]),
+				                                     get_vec(coords[0], coords[2]))))
+		print("Y how it should be:\t{:.5f}".format(a_C2Ys))
+		print("Y angle_new:\t\t{:.5f}".format(get_angle(get_vec(coords[1], coords[3]),
+					                                   get_vec(coords[1], coords[0]))))
 		print()
 
-		
 def print_test_dihedral(coords, place, dihedrals, filename):
 	if place == True:
 
-		print("dihedral_old:\t\t%.5f" % get_dihedral(
+		print("dihedral_old:\t\t{:.5f}".format(get_dihedral(
 				get_vec(coords[2], coords[0]), 
 				get_vec(coords[0], coords[1]),
-				get_vec(coords[1], coords[3]) ))
+				get_vec(coords[1], coords[3]) )))
 	else:
-		print("how it should be:\t%.5f" % dihedrals)
-		print("dihedral_new:\t\t%.5f" % get_dihedral(
+		print("how it should be:\t{:.5f}".format(dihedrals))
+		print("dihedral_new:\t\t{:.5f}".format(get_dihedral(
 				get_vec(coords[2], coords[0]), 
 				get_vec(coords[0], coords[1]),
-				get_vec(coords[1], coords[3]) ))
+				get_vec(coords[1], coords[3]) )))
 		print()
 #		if (float("%.5f" % (dihedrals)) == float("%.5f" % (get_dihedral(get_vec(coords[2], coords[0]), get_vec(coords[0], coords[1]), get_vec(coords[1], coords[3]))))):
 #			print(filename + " +")
@@ -237,23 +236,23 @@ if __name__ == '__main__':
 		C1, C2, X, Y = get_atoms(coords)
 
 		''' set new distances '''
-#		print_test_dist(coords, True, d_C1Xs[i], d_C2Ys[i])
+		print_test_dist(coords, True, d_C1Xs[i], d_C2Ys[i])
 		coords = set_vec(C1, X, get_vec(C1, X), d_C1Xs[i], coords, 'X')
 		C1, C2, X, Y = get_atoms(coords)
 		coords = set_vec(C2, Y, get_vec(C2, Y), d_C2Ys[i], coords, 'Y')
 		C1, C2, X, Y = get_atoms(coords)
-#		print_test_dist(coords, False, d_C1Xs[i], d_C2Ys[i])
+		print_test_dist(coords, False, d_C1Xs[i], d_C2Ys[i])
 
 		''' set new angles '''
-#		print_test_angle(coords, True, a_C1Xs[i], a_C2Ys[i])
+		print_test_angle(coords, True, a_C1Xs[i], a_C2Ys[i])
 		coords = set_angle(a_C1Xs[i], get_vec(C1, X), get_vec(C1, C2), coords, 'X')
 		C1, C2, X, Y = get_atoms(coords)
 		coords = set_angle(a_C2Ys[i], get_vec(C2, Y), get_vec(C2, C1), coords, 'Y')
 		C1, C2, X, Y = get_atoms(coords)
-#		print_test_angle(coords, False, a_C1Xs[i], a_C2Ys[i])
+		print_test_angle(coords, False, a_C1Xs[i], a_C2Ys[i])
 
 		''' set new dihedral '''
-#		print_test_dihedral(coords, True, dihedrals[i])
+		print_test_dihedral(coords, True, dihedrals[i], fin)
 		coords = set_dihedral(Y,
 				                              dihedrals[i],
 																			get_vec(X, C1),

@@ -23,6 +23,9 @@ def get_mol(filename):
 def get_vec(atom1, atom2):
 	return atom2 - atom1
 
+def scalar(v1, v2):
+	return sum(v1*v2)
+
 def get_angle(v1, v2):
 	cos = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
 	arccos = np.arccos(cos)
@@ -39,7 +42,13 @@ def get_dihedral(v1, v2, v3):
 
 	torsion = get_angle(n12, n23)
 
-	return torsion
+	if scalar(n12,v3) >= 0:
+		return torsion
+	else:
+		torsion = 360-torsion
+		if torsion == 360: torsion = 0.0
+
+		return torsion
 
 def get_dist(v):
 	return np.linalg.norm(v)
