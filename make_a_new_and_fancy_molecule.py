@@ -18,18 +18,18 @@ def print_test_angle(coords, place, a_C1Xs, a_C2Ys):
 	if place == True:
 
 		print("X angle_old:\t\t{:.5f}".format(get_angle(get_vec(coords[0], coords[2]),
-				                                     get_vec(coords[0], coords[1]))))
+                                   get_vec(coords[0], coords[1]))))
 		print("Y angle_old:\t\t{:.5f}".format(get_angle(get_vec(coords[1], coords[3]),
-				                                     get_vec(coords[1], coords[0]))))
+                                   get_vec(coords[1], coords[0]))))
 
 		print()
 	else:
 		print("X how it should be:\t{:.5f}".format(a_C1Xs))
 		print("X angle_new:\t\t{:.5f}".format(get_angle(get_vec(coords[0], coords[1]),
-				                                     get_vec(coords[0], coords[2]))))
+                                    get_vec(coords[0], coords[2]))))
 		print("Y how it should be:\t{:.5f}".format(a_C2Ys))
 		print("Y angle_new:\t\t{:.5f}".format(get_angle(get_vec(coords[1], coords[3]),
-					                                   get_vec(coords[1], coords[0]))))
+                                   get_vec(coords[1], coords[0]))))
 		print()
 
 def print_test_dihedral(coords, place, dihedrals, filename):
@@ -169,7 +169,7 @@ def set_vec(origin, atom, v, d_new, coords, XY):
 	if XY == 'X': coords[2] = atom + diff * vn
 	if XY == 'Y': coords[3] = atom + diff * vn
 
-	return coords 
+	return coords
 
 def set_angle(angle_new, v1, v2, coords, XY):
 	''' set angle '''
