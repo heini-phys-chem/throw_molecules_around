@@ -113,8 +113,6 @@ def check_sum_formula(mol, name, mols):
 
 	num_formula_from_name = 'C' + str(numElements['C']) + get_non_zero(numElements, 'H') + get_non_zero(numElements, 'Br') + get_non_zero(numElements, 'Cl') + get_non_zero(numElements, 'F') + get_non_zero(numElements, 'N') + get_non_zero(numElements, 'O')
 
-	#print('##### ' + num_formula_from_name)
-	#print('##### ' + mol.GetFormula())
 	if num_formula_from_name == mol.GetFormula():
 		return True
 	else:
@@ -135,15 +133,11 @@ if __name__ == '__main__':
 
 		check = True
 		if check == True: check = check_num_fragments(mols)
-#		if check == False: print('###### 1')
 		if check == True: check = check_Y_fragments(mols)
-#		if check == False: print('###### 2')
 		if check == True:
 			if rxn == 'e2':  check = check_constraints_E2(mol)
 			if rxn == 'sn2': check = check_constraints_SN2(mol)
-#		if check == False: print('###### 3')
 		if check == True:  check = check_sum_formula(mol, name, mols)
-#		if check == False: print('###### 4')
 
 		if check == True:
 			print(filename + '\t' + name + '\tok')
