@@ -1,2 +1,2 @@
 # throw_molecules_around
-Python code to center, rotate angle and dihedrals.
+A collection of scripts to get data (distances, angles, dihedrals), to move, rotate atoms and validate geometries
