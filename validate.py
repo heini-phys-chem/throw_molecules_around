@@ -24,12 +24,14 @@ def check_num_fragments(mols):
 		return False
 
 def check_Y_fragments(mols):
-	if mols[0].NumAtoms() == 1 and mols[0].GetFormula() in ['H', 'F', 'Cl', 'Br']:
-		return True
-	elif mols[1].NumAtoms() == 1 and mols[1].GetFormula() in ['H', 'F', 'Cl', 'Br']:
-		return True
+#	if mols[0].NumAtoms() == 1 and mols[0].GetFormula() in ['H', 'F', 'Cl', 'Br']:
+#		return True
+#	elif mols[1].NumAtoms() == 1 and mols[1].GetFormula() in ['H', 'F', 'Cl', 'Br']:
+#		return True
+	if mols[0].NumAtoms() > 1 and mols[1].NumAtoms() > 1:
+	  return False
 	else:
-		return False
+		return True
 
 def check_constraints_E2(mol):
 	C2 = ob.OBAtom
@@ -118,6 +120,56 @@ def check_sum_formula(mol, name, mols):
 	else:
 		return False
 
+def check_CY_dist_SN2(mol):
+	dist = {1 : 1.14, 9 : 1.41, 17 : 1.86, 35 : 2.04}
+	C1 = ob.OBAtom
+	Y  = ob.OBAtom
+	
+	C1 = mol.GetAtom(1)
+	Y  = mol.GetAtom(mol.NumAtoms())
+
+	vec_CY = np.linalg.norm(np.array([C1.GetX() - Y.GetX(), C1.GetY() - Y.GetY(), C1.GetZ() - Y.GetZ()]))
+
+	print(vec_CY)
+	print(dist[Y.GetAtomicNum()])
+	if vec_CY > dist[Y.GetAtomicNum()]:
+		return True
+	else:
+		return False
+
+def check_HY_dist_SN2(mol):
+	dist = {1 : 0.78, 9 : 0.96, 17 : 1.33, 35 : 2.48}
+	H  = ob.OBAtom
+	Y  = ob.OBAtom
+	Y  = mol.GetAtom(mol.NumAtoms())
+
+	numAtoms = mol.NumAtoms()
+	distance = 10
+
+	for i in range(1, numAtoms):
+	  if mol.GetAtom(i).GetAtomicNum() != 1:
+	    continue
+	  else:
+	    H = mol.GetAtom(i)
+	
+	    tmp_distance = np.linalg.norm([ Y.GetX() - H.GetX(), Y.GetY() - H.GetY(), Y.GetZ() - H.GetZ() ])
+	
+	    if tmp_distance < distance: distance = tmp_distance
+
+	print(tmp_distance)
+	print(dist[Y.GetAtomicNum()])
+	if tmp_distance > dist[Y.GetAtomicNum()]:
+		return True
+	else:
+		return False
+
+
+def test(mol):
+	numAtoms = mol.NumAtoms()
+
+	for i in range(1, numAtoms + 1):
+		print(mol.GetAtom(i).GetAtomicNum())
+
 if __name__ == '__main__':
 
 	lines = open(sys.argv[1], 'r').readlines()
@@ -130,14 +182,17 @@ if __name__ == '__main__':
 
 		mol, conv = get_mol(filename)
 		mols = mol.Separate()
+		print('-------------------------------------')
 
-		check = True
-		if check == True: check = check_num_fragments(mols)
+		check = check_num_fragments(mols)
 		if check == True: check = check_Y_fragments(mols)
-		if check == True:
-			if rxn == 'e2':  check = check_constraints_E2(mol)
-			if rxn == 'sn2': check = check_constraints_SN2(mol)
-		if check == True:  check = check_sum_formula(mol, name, mols)
+		if rxn == 'e2':
+			if check == True: check = check_constraints_E2(mol)
+		if rxn == 'sn2':
+			if check == True: check = check_CY_dist_SN2(mol)
+			if check == True: check = check_HY_dist_SN2(mol)
+			if check == True: check = check_constraints_SN2(mol)
+		if check == True: check = check_sum_formula(mol, name, mols)
 
 		if check == True:
 			print(filename + '\t' + name + '\tok')
