@@ -3,6 +3,7 @@
 import sys
 import numpy as np
 import openbabel as ob
+from MDAnalysis import Universe, topology
 
 
 
@@ -29,7 +30,7 @@ def check_Y_fragments(mols):
 #	elif mols[1].NumAtoms() == 1 and mols[1].GetFormula() in ['H', 'F', 'Cl', 'Br']:
 #		return True
 	if mols[0].NumAtoms() > 1 and mols[1].NumAtoms() > 1:
-	  return False
+		return False
 	else:
 		return True
 
@@ -124,14 +125,12 @@ def check_CY_dist_SN2(mol):
 	dist = {1 : 1.14, 9 : 1.41, 17 : 1.86, 35 : 2.04}
 	C1 = ob.OBAtom
 	Y  = ob.OBAtom
-	
+
 	C1 = mol.GetAtom(1)
 	Y  = mol.GetAtom(mol.NumAtoms())
 
 	vec_CY = np.linalg.norm(np.array([C1.GetX() - Y.GetX(), C1.GetY() - Y.GetY(), C1.GetZ() - Y.GetZ()]))
 
-	print(vec_CY)
-	print(dist[Y.GetAtomicNum()])
 	if vec_CY > dist[Y.GetAtomicNum()]:
 		return True
 	else:
@@ -147,22 +146,30 @@ def check_HY_dist_SN2(mol):
 	distance = 10
 
 	for i in range(1, numAtoms):
-	  if mol.GetAtom(i).GetAtomicNum() != 1:
-	    continue
-	  else:
-	    H = mol.GetAtom(i)
-	
-	    tmp_distance = np.linalg.norm([ Y.GetX() - H.GetX(), Y.GetY() - H.GetY(), Y.GetZ() - H.GetZ() ])
-	
-	    if tmp_distance < distance: distance = tmp_distance
+		if mol.GetAtom(i).GetAtomicNum() != 1:
+			continue
+		else:
+			H = mol.GetAtom(i)
 
-	print(tmp_distance)
-	print(dist[Y.GetAtomicNum()])
+			tmp_distance = np.linalg.norm([ Y.GetX() - H.GetX(), Y.GetY() - H.GetY(), Y.GetZ() - H.GetZ() ])
+
+			if tmp_distance < distance: distance = tmp_distance
+
 	if tmp_distance > dist[Y.GetAtomicNum()]:
 		return True
 	else:
 		return False
 
+def check_dist(f):
+	u = Universe(f)
+	print(u.atoms.positions)
+	print(topology.guessers.guess_bonds(u.atoms, u.atoms.positions))
+	print(len(u.atoms) - 1)
+
+	for i in topology.guessers.guess_bonds(u.atoms, u.atoms.positions):
+		if len(u.atoms) - 1 in i:
+			return False
+	return True
 
 def test(mol):
 	numAtoms = mol.NumAtoms()
@@ -179,7 +186,10 @@ if __name__ == '__main__':
 		filename = tokens[0] + '.xyz'
 		name = tokens[1]
 		rxn = tokens[2]
+		energy = float(tokens[3])
 
+		check_dist(filename)
+		exit()
 		mol, conv = get_mol(filename)
 		mols = mol.Separate()
 		print('-------------------------------------')
@@ -192,9 +202,10 @@ if __name__ == '__main__':
 			if check == True: check = check_CY_dist_SN2(mol)
 			if check == True: check = check_HY_dist_SN2(mol)
 			if check == True: check = check_constraints_SN2(mol)
+			if check == True: check = check_dist(filename)
 		if check == True: check = check_sum_formula(mol, name, mols)
 
 		if check == True:
-			print(filename + '\t' + name + '\tok')
+			print(filename + '\t' + name + '\t' + str(energy) + '\tok')
 		else:
-			print(filename + '\t' + name + '\tFail')
+			print(filename + '\t' + name + '\t' + str(energy) + '\tFail')
