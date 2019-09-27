@@ -13,7 +13,7 @@ def read_file(f):
 		tokens = line.split()
 		tmp = tokens[0].split('/')
 		name = tmp[1][:-1] + tmp[3].split('-')[3]
-		energy = float(tokens[2])*627.509
+		energy = float(tokens[2])*627.509 # convert Ha to kcal/mol
 
 		if name in d:
 			d[name].append([energy])
