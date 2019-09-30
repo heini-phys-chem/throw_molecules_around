@@ -123,6 +123,7 @@ def check_sum_formula(mol, name, mols):
 
 def check_CY_dist_SN2(mol):
 	dist = {1 : 1.14, 9 : 1.41, 17 : 1.86, 35 : 2.04}
+	#dist = {1 : 3, 9 : 3, 17 : 3, 35 : 3}
 	C1 = ob.OBAtom
 	Y  = ob.OBAtom
 
@@ -162,10 +163,10 @@ def check_HY_dist_SN2(mol):
 
 def check_dist(f):
 	u = Universe(f)
-	print(u.atoms.positions)
-	print(topology.guessers.guess_bonds(u.atoms, u.atoms.positions))
-	print(len(u.atoms) - 1)
 
+#	print(topology.guessers.guess_bonds(u.atoms, u.atoms.positions))
+#	print()
+#	print(len(u.atoms) - 1)
 	for i in topology.guessers.guess_bonds(u.atoms, u.atoms.positions):
 		if len(u.atoms) - 1 in i:
 			return False
@@ -186,13 +187,16 @@ if __name__ == '__main__':
 		filename = tokens[0] + '.xyz'
 		name = tokens[1]
 		rxn = tokens[2]
-		energy = float(tokens[3])
+		try:
+			energy = float(tokens[3])
+		except:
+			continue
 
-		check_dist(filename)
-		exit()
+#		check_dist(filename)
+#		exit()
+
 		mol, conv = get_mol(filename)
 		mols = mol.Separate()
-		print('-------------------------------------')
 
 		check = check_num_fragments(mols)
 		if check == True: check = check_Y_fragments(mols)
