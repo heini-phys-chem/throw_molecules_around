@@ -36,6 +36,20 @@ def get_df(f, ref):
 def histogram(data, label):
 	sns.distplot(data, kde=False, label=label)
 
+def make_figure():
+	fig, axes = plt.subplots(1, 1)
+	fig.set_size_inches(8, 6, forward=True)
+	plt.gcf().subplots_adjust(bottom=.20, left=.1, wspace=.25)
+
+	return fig, axes
+
+def set_stuff():
+	fig.text(.5, .04, r"Energy [kcal$\cdot$mol$^{-1}$]", ha='center', va='center', fontsize=25)
+
+	plt.yscale('log')
+	plt.legend(fontsize=25, frameon=False)
+
+
 if __name__ == "__main__":
 	f_old = sys.argv[1]
 	f_new = sys.argv[2]
@@ -49,26 +63,22 @@ if __name__ == "__main__":
 	df['Ea_new'] = (df['E_ts'] - df['E_react_new'])*627.509
 
 	print(df)
-	th = 100
-	df_old = df.query('Ea_old < @th & Ea_old > -@th')
-	df_new = df.query('Ea_new < @th & Ea_new > -@th')
+	th_upper = 100
+	th_lower = 0
+
+	df_old = df.query('Ea_old < @th_upper & Ea_old > @th_lower')
+	df_new = df.query('Ea_new < @th_upper & Ea_new > @th_lower')
 
 	df_old.to_csv('df_old.csv', index=None, sep=' ', header=False)
 	df_new.to_csv('df_new.csv', index=None, sep=' ', header=False)
 
-	fig, axes = plt.subplots(1, 1)
-	fig.set_size_inches(8, 6, forward=True)
-	plt.gcf().subplots_adjust(bottom=.20, left=.1, wspace=.25)
+	fig, axes = make_figure()
 
 	labels = [r"S$_N$2 old", r"S$_N$2 new"]
 
 	histogram(df_old['Ea_old'], labels[0])
 	histogram(df_new['Ea_new'], labels[1])
 
-	fig.text(.5, .04, r"Energy [kcal$\cdot$mol$^{-1}$]", ha='center', va='center', fontsize=25)
-
-	plt.yscale('log')
-	plt.legend(fontsize=25, frameon=False)
-
+	set_stuff()
 
 	plt.show()
